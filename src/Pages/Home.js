@@ -85,7 +85,9 @@ function Home() {
         setAmigo(response.data);
       } catch (err) { }
     };
-    getAmigodetails();
+    if (currentchat) {
+      getAmigodetails();
+    }
   }, [user, currentchat, API_URL]);
 
   /* Fetching ChatRoom Messages */
@@ -99,7 +101,9 @@ function Home() {
         console.log(err);
       }
     };
-    getMessages();
+    if (currentchat) {
+      getMessages();
+    }
   }, [currentchat, API_URL]);
 
   /* Scroll to the recent message */
@@ -226,9 +230,9 @@ function Home() {
           {/* Chatroom tiles */}
 
           <div className="sidebar-chatoptions">
-            {chatroomtiles.map((chatroomtile) => (
+            {chatroomtiles.map((chatroomtile, index) => (
               <div
-                key={chatroomtile?._id}
+                key={index}
                 onClick={() => { setCurrentchat(chatroomtile); setOpen(false) }} >
                 <SidebarChat chatroomtile={chatroomtile} currentUser={user} />
               </div>
@@ -252,8 +256,8 @@ function Home() {
                 </div>
               </div>
               <div className="chatroom-messages-container" onClick={() => { setPick(false) }}>
-                {messages.map((message) => (
-                  <div key={message?._id} ref={scrollRef}>
+                {messages.map((message, index) => (
+                  <div key={index} ref={scrollRef}>
                     <Message message={message} own={message?.senderId === user._id} />
                   </div>
                 ))}
