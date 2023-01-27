@@ -34,9 +34,11 @@ function SidebarChat({ chatroomtile, currentUser }) {
 
     return (
         <div className='sidebarchat'>
-            <img className='amigo-profilepic' src={user?.photo ? API_URL + "photo/" + user?.photo : "assets/noavatar.jpg"} alt='' />
-            <div className={online ? "online" : "offile"}></div>
-            <p className="sidebarchat-info-name">{user != null ? user.username : ""}</p>
+            <div>
+                <img className='amigo-profilepic' src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
+                <div className={online ? "online" : "offile"}></div>
+            </div>
+            <p className="sidebarchat-info-name">{user ? user?.firstname + " " + user?.lastname : ""}</p>
         </div>
     )
 }

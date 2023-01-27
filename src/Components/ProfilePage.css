@@ -3,10 +3,11 @@
 }
 
 .profile-card-open {
-  max-width: 500px;
+  max-width: 400px;
   height: 500px;
   display: flex;
   flex-direction: column;
+  padding: 10px 30px;
   position: absolute;
   top: 0;
   left: 0;
@@ -111,4 +112,12 @@
   .profile-card-open{
     max-width: 300px;
   }
+}
+
+.user-input {
+  font-size: 20px;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  line-height: 1;
 }

@@ -1,5 +1,4 @@
 import Signin from "./Pages/Signin.js"
-import Signup from "./Pages/Signup.js"
 import Home from "./Pages/Home.js"
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useContext } from "react"
@@ -13,9 +12,8 @@ function App() {
     <Router>
       <div className="App">
         <Switch>
-          <Route exact path='/'>
-            {user ? <Home /> : <Signin />}
-          </Route>
+          <Route exact path="/chatapp/:msg" component={Signin} />
+          <Route path="/chatapp/user/:member" component={Home} />
         </Switch>
       </div>
     </Router>

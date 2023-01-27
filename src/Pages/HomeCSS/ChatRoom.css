@@ -4,6 +4,7 @@
     flex:0.65;
     width: 40vw;
     position: relative;
+    justify-content: center;
 }
 
 .chatroom-header{

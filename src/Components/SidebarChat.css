@@ -26,9 +26,11 @@
 }
 
 .sidebarchat-info-name{
-    font-size: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    font-size: 20px;
     font-weight: 500;
-    position: absolute;
     left: 80px;
 }
 

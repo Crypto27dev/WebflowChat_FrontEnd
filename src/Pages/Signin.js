@@ -1,72 +1,75 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
+import { useHistory, useParams } from 'react-router-dom';
 import './Signin-up.css'
-import { useMemberstack, useMemberstackModal } from "@memberstack/react";
 import axios from 'axios'
+import { Comment } from 'react-loader-spinner';
 import { AuthContext } from '../Context/AuthContext'
 
 function Signin() {
-    const { getCurrentMember } = useMemberstack();
-    const { openModal, hideModal } = useMemberstackModal();
-    const [member, setMember] = useState(null);
-    const { dispatch } = useContext(AuthContext)
-    const API_URL = process.env.REACT_APP_API_URL
+    const { dispatch, setUserId } = useContext(AuthContext);
+    const history = useHistory();
+    const API_URL = process.env.REACT_APP_API_URL;
+    const API_KEY = process.env.REACT_APP_MEMBERSTACK_KEY;
+    const BASE_URL = 'https://admin.memberstack.com/members';
+    const headers = { "X-API-KEY": API_KEY };
+    const { msg } = useParams();
 
     useEffect(() => {
-        getCurrentMember().then(({ data: member }) => setMember(member));
+        loginCall(msg, dispatch);
     }, []);
 
-    const signUpModal = () => {
-        openModal({
-            type: "SIGNUP",
-            planId: "pln_test-memberstack-c7iw0rew"
-        }).then(({ data, type }) => {
-            console.log("data", data);
-            console.log("type: ", type);
-            if (type === "SIGNUP") {
-                registerCall(data);
-                const member = data.member.auth;
-                loginCall({ email: member.email }, dispatch)
-                hideModal();
-            } else if (type === "LOGIN") {
-                const member = data.member.auth;
-                loginCall({ email: member.email }, dispatch)
-                hideModal();
-            }
-        });
-    }
-
-    const logInModal = () => {
-        openModal({
-            type: "LOGIN"
-        }).then(({ data, type }) => {
-            console.log("data", data);
-            console.log("type: ", type);
-            if (type === "LOGIN") {
-                const member = data.member.auth;
-                loginCall({ email: member.email }, dispatch)
-                hideModal();
-            }
-        });
-    }
-
-    const registerCall = async (data) => {
+    const getUserInfo = async (mem_id) => {
         try {
-            const form = {
-                email: data.member.auth.email
-            }
-            await axios.post(API_URL + "api/auth/signup", form);
+            const resp = await axios.get(`${BASE_URL}/${mem_id}`, { headers });
+            return resp.data.data;
         } catch (err) {
             console.log(err);
         }
+        return null;
     }
 
-    const loginCall = async (userCredential, dispatch) => {
-        dispatch({ type: "LOGIN_START" });
+    const registerCall = async(member_id) => {
         try {
-            const res = await axios.post(API_URL + "api/auth/signin", userCredential);
-            dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+            const profile = await getUserInfo(member_id);
+            const res = await axios.post(API_URL + "api/auth/signin", {
+                firstname: profile.customFields.fornavn,
+                lastname: profile.customFields.etternavn,
+                email: profile.auth.email,
+                mem_id: profile.id,
+                avatar: profile.customFields.profilbilde
+            });
         }
         catch (err) {
+            console.log("Register Err:", err)
+        }
+    }
+
+    const loginCall = async (pathname, dispatch) => {
+        dispatch({ type: "LOGIN_START" });
+        try {
+            const token = pathname.replace('/chatapp/', '');
+            const data = JSON.parse(atob(token));
+            const userInfo = {
+                email: data.email,
+                mem_id: data.mem_id
+            }
+            
+            const profile = await getUserInfo(userInfo.mem_id);
+            const res = await axios.post(API_URL + "api/auth/signin", {
+                firstname: profile.customFields.fornavn,
+                lastname: profile.customFields.etternavn,
+                email: profile.auth.email,
+                mem_id: profile.id,
+                avatar: profile.customFields.profilbilde
+            });
+            if (data?.to) {
+                await registerCall(data.to);
+            }
+            dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+            history.push(`/chatapp/user/${data.to}`);
+        }
+        catch (err) {
+            console.log("Login Err:", err)
             dispatch({ type: "LOGIN_FAILURE", payload: err })
         }
     }
@@ -74,21 +77,21 @@ function Signin() {
 
     return (
         <div className='signin-container'>
-            <div className='signin-content'>
-                <h1>Welcome</h1>
-                <div className='btn-group'>
-                    <button className='btn btn-login' onClick={logInModal}>
-                        Log In
-                    </button>
-                    <button className='btn btn-signup' onClick={signUpModal}>
-                        Sign Up
-                    </button>
-                </div>
+            <div>
+                <Comment
+                    visible={true}
+                    height="80"
+                    width="80"
+                    ariaLabel="comment-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="comment-wrapper"
+                    color="#316af3"
+                    backgroundColor="#fff"
+                />
             </div>
             <footer>
                 <span>@Copyright2023</span>
-                <span>Vladimir</span>
-            </footer>            
+            </footer>
         </div>
     )
 }

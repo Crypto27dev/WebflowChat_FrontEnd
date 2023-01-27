@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import "./HomeCSS/Home.css";
 import "./HomeCSS/Sidebar.css";
 import "./HomeCSS/ChatRoom.css";
@@ -33,12 +34,11 @@ function Home() {
   const [amigo, setAmigo] = useState();
   const [open, setOpen] = useState(false);
   const { user } = useContext(AuthContext);
+  const { member } = useParams();
   const scrollRef = useRef();
   const socket = useRef();
 
   const API_URL = process.env.REACT_APP_API_URL
-
-  /* Making Messages Realtime */
 
   useEffect(() => {
     socket.current = io(API_URL);
@@ -64,15 +64,42 @@ function Home() {
   /* Fetching the Chat Tiles */
 
   useEffect(() => {
+    const setAmigo = async () => {
+      try {
+        
+      } catch (err) {
+        console.log(err);
+      }
+    }
     const getChatroomtiles = async () => {
       try {
+        let data = null;
+        if (member !== 'default') {
+          const response = await axios.get(`${API_URL}api/users/?member=${member}`)
+          data = {
+            senderId: user._id,
+            receiverId: response.data._id
+          }
+          await axios.post(API_URL + 'api/chatrooms', data)
+        }
+
         const res = await axios.get(API_URL + "api/chatrooms/" + user._id);
         setChatroomtiles(res.data);
+
+        if (data) {
+          const resp = await axios.get(API_URL + 'api/chatrooms', data);
+          setCurrentchat(resp.data[0]);
+        }
       } catch (err) {
         console.log(err);
       }
     };
-    getChatroomtiles();
+    (async () => {
+      if (member !== 'default') {
+        await setAmigo();
+      }
+      await getChatroomtiles();
+    })();
   }, [user?._id, API_URL]);
 
   /* Fetching the Chat Tile user details */
@@ -175,6 +202,8 @@ function Home() {
     profiletoggle === false ? setProfiletoggle(true) : setProfiletoggle(false);
   };
 
+  console.log(">>>", chatroomtiles);
+
   return (
     <div className="home">
       {/* Chat Adding Card */}
@@ -194,11 +223,11 @@ function Home() {
       }
 
       {/* Add Chat Icon */}
-      <div className="add-chatroom-icon" onClick={addchatToggler}>
+      {/* <div className="add-chatroom-icon" onClick={addchatToggler}>
         <IconButton>
           <PersonAddIcon />
         </IconButton>
-      </div>
+      </div> */}
 
       {/* Sidebar, ChatRoom */}
       <div className="home-components">
@@ -212,7 +241,7 @@ function Home() {
               </IconButton>
             </div>
             <IconButton onClick={() => { profiletoggler(); }} >
-              <img className="user-profile-image" src={user?.photo ? API_URL + "photo/" + user?.photo : "assets/noavatar.jpg"} alt='' />
+              <img className="user-profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
             </IconButton>
             <div className="logout-option">
               <IconButton onClick={logout}>
@@ -230,13 +259,16 @@ function Home() {
           {/* Chatroom tiles */}
 
           <div className="sidebar-chatoptions">
-            {chatroomtiles.map((chatroomtile, index) => (
-              <div
-                key={index}
-                onClick={() => { setCurrentchat(chatroomtile); setOpen(false) }} >
-                <SidebarChat chatroomtile={chatroomtile} currentUser={user} />
-              </div>
-            ))}
+            {chatroomtiles.map((chatroomtile, index) => {
+
+              return (
+                <div
+                  key={index}
+                  onClick={() => { setCurrentchat(chatroomtile); setOpen(false) }} >
+                  <SidebarChat chatroomtile={chatroomtile} currentUser={user} />
+                </div>
+              )
+            })}
           </div>
         </div>
 
@@ -246,11 +278,10 @@ function Home() {
             <>
               <div className="chatroom-header">
                 <div className="chatroom-chatinfo">
-                  <img className='amigo-profilepic' src={amigo?.photo ? API_URL + "photo/" + amigo?.photo : "assets/noavatar.jpg"} alt='' />
-
+                  <img className='amigo-profilepic' src={amigo?.avatar ? amigo.avatar : API_URL + "api/images/noavatar.png"} alt='' />
                   <div className="chatroom-chatinfo-right">
                     <div className="chatroom-chatinfo-name">
-                      <p>{amigo?.username}</p>
+                      <p>{amigo ? amigo.firstname + " " + amigo.lastname : ""}</p>
                     </div>
                   </div>
                 </div>

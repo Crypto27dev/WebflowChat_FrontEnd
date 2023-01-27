@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import CloseIcon from "@material-ui/icons/Close";
 import "./ProfilePage.css";
 import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
@@ -6,9 +7,8 @@ import axios from "axios";
 function ProfilePage({ toggler, togglestate }) {
 
   const { user } = useContext(AuthContext);
-  const [username, setUsername] = useState(user.username)
+  const [username, setUsername] = useState(user?.firstname + " " + user?.lastname)
   const [photo, setPhoto] = useState("")
-
   const API_URL = process.env.REACT_APP_API_URL
 
   const handleSubmit = async (e) => {
@@ -42,14 +42,22 @@ function ProfilePage({ toggler, togglestate }) {
       <div className={togglestate ? "profile-card-open" : "profile-card-close"}>
         <div className="close-div">
           <span onClick={toggler}>
-            <p className="close-symbol">x</p>
+            <CloseIcon fontSize="large"/>
           </span>
         </div>
-        <img className="profile-image" src={user?.photo ? API_URL+"photo/" + user?.photo : "assets/noavatar.jpg"} alt=""></img>
+        <img className="profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt=""></img>
         <form>
-          <label htmlFor="username">Username</label>
-          <input type="text" className="username-input" value={username} onChange={(e) => { setUsername(e.target.value) }} required></input>
-          <input
+          <label>User Name</label>
+          <div className="user-input">
+            {user?.firstname} {user?.lastname}
+          </div>
+          <label>Email</label>
+          <div className="user-input">
+            {user?.email}
+          </div>
+          <button type="button" onClick={toggler}>Close</button>
+          {/*<input type="text" className="username-input" value={username} onChange={(e) => { setUsername(e.target.value) }} required></input>
+           <input
             className="update-profilepic"
             type="file"
             accept=".png, .jpg, .jpeg, .gif"
@@ -57,8 +65,9 @@ function ProfilePage({ toggler, togglestate }) {
             onChange={(e) => {
               setPhoto(e.target.files[0]);
             }}
-          />
+          /> 
           <button onClick={handleSubmit}>UPDATE</button>
+          */}
         </form>
       </div>
     </div>
