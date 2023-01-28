@@ -33,8 +33,7 @@ function Home() {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [amigo, setAmigo] = useState();
   const [open, setOpen] = useState(false);
-  const { user } = useContext(AuthContext);
-  const { member } = useParams();
+  const { user, currentMem } = useContext(AuthContext);
   const scrollRef = useRef();
   const socket = useRef();
 
@@ -64,18 +63,11 @@ function Home() {
   /* Fetching the Chat Tiles */
 
   useEffect(() => {
-    const setAmigo = async () => {
-      try {
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
     const getChatroomtiles = async () => {
       try {
         let data = null;
-        if (member !== 'default') {
-          const response = await axios.get(`${API_URL}api/users/?member=${member}`)
+        if (currentMem) {
+          const response = await axios.get(`${API_URL}api/users/?member=${currentMem}`)
           data = {
             senderId: user._id,
             receiverId: response.data._id
@@ -87,7 +79,8 @@ function Home() {
         setChatroomtiles(res.data);
 
         if (data) {
-          const resp = await axios.get(API_URL + 'api/chatrooms', data);
+          const resp = await axios.post(API_URL + 'api/chatrooms/get', data);
+          console.log(">>>>Current Chat", resp.data)
           setCurrentchat(resp.data[0]);
         }
       } catch (err) {
@@ -95,12 +88,9 @@ function Home() {
       }
     };
     (async () => {
-      if (member !== 'default') {
-        await setAmigo();
-      }
       await getChatroomtiles();
     })();
-  }, [user?._id, API_URL]);
+  }, [user?._id, currentMem, API_URL]);
 
   /* Fetching the Chat Tile user details */
 
@@ -184,7 +174,7 @@ function Home() {
 
   const logout = () => {
     localStorage.removeItem("user");
-    window.location.reload();
+    window.location.href = "/";
   };
 
   /* AddChat Toggle Setup */
@@ -202,8 +192,6 @@ function Home() {
     profiletoggle === false ? setProfiletoggle(true) : setProfiletoggle(false);
   };
 
-  console.log(">>>", chatroomtiles);
-
   return (
     <div className="home">
       {/* Chat Adding Card */}
@@ -217,7 +205,7 @@ function Home() {
         ? ""
         : <div className="menu-open" onClick={() => { setOpen(true); }} >
           <IconButton>
-            <MenuIcon style={{ fontSize: 35, color: "#316af3" }} />
+            <MenuIcon style={{ fontSize: 35, color: "#0e1012" }} />
           </IconButton>
         </div>
       }
@@ -236,11 +224,11 @@ function Home() {
         <div className={open ? "sidebar active" : "sidebar"}>
           <div className="sidebar-header">
             <div className="menu-close" onClick={() => { setOpen(false); }} >
-              <IconButton>
+              <IconButton sx={{ width: '50px', height: '50px' }}>
                 <CloseIcon style={{ fontSize: 35, color: "white" }} />
               </IconButton>
             </div>
-            <IconButton onClick={() => { profiletoggler(); }} >
+            <IconButton className="user-profile" onClick={() => { profiletoggler(); }} >
               <img className="user-profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
             </IconButton>
             <div className="logout-option">

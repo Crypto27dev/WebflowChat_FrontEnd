@@ -9,9 +9,8 @@
 .sidebar-header {
   display: flex;
   justify-content: space-between;
-  padding: 20px 28px;
+  padding: 10px 20px;
   align-items: center;
-  max-height: 30px;
   position: relative;
   border-bottom: 0.1px solid rgb(212, 212, 212);
 }
@@ -50,6 +49,14 @@
   background-color: #f5f5f5;
 }
 
+.user-profile {
+  width: 50px !important;
+}
+
+.user-profile .MuiIconButton-label {
+  width: 50px !important;
+}
+
 .user-profile-image {
   height: 50px;
   width: 50px;
@@ -72,7 +79,7 @@
     left: 0;
     opacity: 1;
     transition: all 0.5s ease;
-    background-color: #5168ff;
+    background-color: #0e1012;
     z-index: 100;
   }
   .sidebar-search {
@@ -80,7 +87,6 @@
   }
   .user-profile-image {
     position: absolute;
-    right: -45%;
   }
   .logout-option {
     position: absolute;

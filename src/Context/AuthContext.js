@@ -2,16 +2,10 @@ import { createContext, useState, useEffect, useReducer } from "react"
 import AuthReducer from "./AuthReducer"
 
 const INITIAL_STATE = {
-    user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null,
+    user: null,
     isFetching:false,
     error:false
 }
-
-const isEmpty = value =>
-  value === undefined ||
-  value === null ||
-  (typeof value === "object" && Object.keys(value).length === 0) ||
-  (typeof value === "string" && value.trim().length === 0);
 
 /* Reads the data from the Provider and changes INITIAL_STATE */
 export const AuthContext = createContext(INITIAL_STATE)
@@ -20,7 +14,8 @@ export const AuthContext = createContext(INITIAL_STATE)
 /* This will provide data to all the children that we are giving here */
 export const AuthContextProvider = ({children}) =>{
     const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
-    const [userId, setUserId] = useState('');
+    const [isLoading, setLoading] = useState(true);
+    const [currentMem, setCurrentMem] = useState('');
 
     useEffect(()=>{
         if (typeof state.user !== "string") {
@@ -34,8 +29,10 @@ export const AuthContextProvider = ({children}) =>{
             user:state.user,
             isFetching:state.isFetching,
             error:state.error,
-            userId,
-            setUserId,
+            isLoading,
+            currentMem,
+            setLoading,
+            setCurrentMem,
             dispatch
         }}
         >

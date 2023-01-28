@@ -11,8 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
-    max-height: 30px;
+    padding: 10px 20px;
     border-bottom: 0.1px solid rgb(212, 212, 212);
     border-top-right-radius: 10px;
     z-index: 80;
@@ -26,6 +25,10 @@
 .chatroom-chatinfo-name{
     font-size: 22px;
     font-weight: 500;
+}
+
+.chatroom-chatinfo-name p {
+    margin: 0;
 }
 
 .chatroom-options{

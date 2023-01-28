@@ -1,22 +1,18 @@
 import Signin from "./Pages/Signin.js"
 import Home from "./Pages/Home.js"
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { useContext } from "react"
 import { AuthContext } from "./Context/AuthContext.js"
 
 function App() {
-
-  const { user } = useContext(AuthContext)
-
+  const { isLoading } = useContext(AuthContext);
   return (
-    <Router>
-      <div className="App">
-        <Switch>
-          <Route exact path="/chatapp/:msg" component={Signin} />
-          <Route path="/chatapp/user/:member" component={Home} />
-        </Switch>
-      </div>
-    </Router>
+    <div className="App">
+      {isLoading ? (
+        <Signin></Signin>
+      ) : (
+        <Home></Home>
+      )}
+    </div>
   );
 }
 
