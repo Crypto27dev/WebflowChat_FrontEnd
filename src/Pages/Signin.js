@@ -66,7 +66,7 @@ function Signin() {
                 mem_id: profile.id,
                 avatar: profile.customFields.profilbilde
             });
-            console.log(">>>", param);
+            
             if (param?.to) {
                 await registerCall(param.to);
             }

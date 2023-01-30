@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import "./HomeCSS/Home.css";
 import "./HomeCSS/Sidebar.css";
 import "./HomeCSS/ChatRoom.css";
@@ -14,6 +13,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
 import SendIcon from "@material-ui/icons/Send";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -30,11 +30,13 @@ function Home() {
   const [currentchat, setCurrentchat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [search, setSearch] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [amigo, setAmigo] = useState();
   const [open, setOpen] = useState(false);
   const { user, currentMem } = useContext(AuthContext);
-  const scrollRef = useRef();
+  const roomRef = useRef();
+  const formRef = useRef();
   const socket = useRef();
 
   const API_URL = process.env.REACT_APP_API_URL
@@ -63,7 +65,7 @@ function Home() {
   /* Fetching the Chat Tiles */
 
   useEffect(() => {
-    const getChatroomtiles = async () => {
+    const getChatroomtiles = async (searchText) => {
       try {
         let data = null;
         if (currentMem) {
@@ -75,12 +77,15 @@ function Home() {
           await axios.post(API_URL + 'api/chatrooms', data)
         }
 
-        const res = await axios.get(API_URL + "api/chatrooms/" + user._id);
+        const res = await axios.get(API_URL + "api/chatrooms", {
+          params: {
+            user_id: user._id
+          }
+        });
         setChatroomtiles(res.data);
 
         if (data) {
           const resp = await axios.post(API_URL + 'api/chatrooms/get', data);
-          console.log(">>>>Current Chat", resp.data)
           setCurrentchat(resp.data[0]);
         }
       } catch (err) {
@@ -126,8 +131,15 @@ function Home() {
   /* Scroll to the recent message */
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollItThere();
   }, [messages]);
+
+  const scrollItThere = () => {
+    roomRef.current?.scroll({
+      top: roomRef.current?.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
 
   /* Emoji Picker */
 
@@ -141,6 +153,18 @@ function Home() {
   };
 
   /* Posting a Message */
+
+  const handleMessageKey = (e) => {
+    if (e.keyCode == 13 && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+      return false;
+    }
+  }
+
+  const handleMessage = (e) => {
+    setNewMessage(e.target.value);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -240,23 +264,40 @@ function Home() {
           <div className="sidebar-search">
             <div className="sidebar-search-container">
               <SearchIcon className="sidebar-searchicon" />
-              <input type="text" name="chat-search" placeholder="Search a Chat" />
+              <input type="text" name="chat-search" placeholder="Søk i en chat" onChange={(e) => setSearch(e.target.value)} />
             </div>
           </div>
 
           {/* Chatroom tiles */}
 
           <div className="sidebar-chatoptions">
-            {chatroomtiles.map((chatroomtile, index) => {
-
-              return (
-                <div
-                  key={index}
-                  onClick={() => { setCurrentchat(chatroomtile); setOpen(false) }} >
-                  <SidebarChat chatroomtile={chatroomtile} currentUser={user} />
-                </div>
-              )
-            })}
+            {chatroomtiles.filter(opt => {
+              if (search) {
+                for (let i = 0; i < opt.usernames.length; i ++) {
+                  const item = opt.usernames[i];
+                  const fullname = user.firstname + " " + user.lastname;
+                  if (item !== fullname && item.toLowerCase().includes(search.toLowerCase())) {
+                    return true;
+                  }
+                }
+                return false;
+              } else {
+                return true;
+              }
+            }).map((chatroomtile, index) => (
+              <div
+                key={index}
+                onClick={(e) => {
+                  if (e.target.name === 'chat-info-name') {
+                    return;
+                  }
+                  setCurrentchat(chatroomtile);
+                  setOpen(false);
+                }}
+              >
+                <SidebarChat chatroomtile={chatroomtile} currentChat={currentchat} currentUser={user} />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -274,10 +315,10 @@ function Home() {
                   </div>
                 </div>
               </div>
-              <div className="chatroom-messages-container" onClick={() => { setPick(false) }}>
+              <div className="chatroom-messages-container" ref={roomRef} onClick={() => { setPick(false) }}>
                 {messages.map((message, index) => (
-                  <div key={index} ref={scrollRef}>
-                    <Message message={message} own={message?.senderId === user._id} />
+                  <div key={index}>
+                    <Message message={message} amigo={amigo} own={message?.senderId === user._id} />
                   </div>
                 ))}
               </div>
@@ -294,7 +335,16 @@ function Home() {
                   </IconButton>
                 </div>
                 <form>
-                  <input className="message-input" type="text" name="message-input" placeholder="Type a message" onChange={(e) => { setNewMessage(e.target.value); }} value={newMessage} required />
+                  <TextareaAutosize
+                    className="message-input"
+                    name="message-input"
+                    placeholder="Type a message"
+                    maxRows={5}
+                    onKeyDown={handleMessageKey}
+                    onChange={handleMessage}
+                    value={newMessage}
+                    required
+                  />
                   <button className="input-button" onClick={newMessage ? handleSubmit : null} > Send a Message </button>
                 </form>
                 <div className="chatroom-footer-righticon" onClick={newMessage ? handleSubmit : null} >

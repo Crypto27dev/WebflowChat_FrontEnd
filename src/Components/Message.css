@@ -10,7 +10,8 @@
   padding: 5px 15px 5px 15px;
   border-radius: 10px 10px 10px 0px;
   margin-bottom: 25px;
-  font-size: 19px;
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
 }
 
 .message-sent {
@@ -24,15 +25,51 @@
   border-radius: 10px 10px 0px 10px;
   background-color: #445dfa;
   color: white;
-  font-weight: 500;
+  font-family: 'Inter', sans-serif;
   margin-bottom: 25px;
-  font-size: 19px;
+  font-size: 18px;
 }
 
-.message-time {
+/* .message-time {
   display: flex;
   justify-content: flex-end;
   font-size: 12px;
   margin-top: 3px;
   font-weight: 300;
+} */
+
+.message-box {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 10px;
+}
+
+.message-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.message-header {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  gap: 10px;
+}
+
+.message-user {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.message-time {
+  font-size: 15px;
+  color: gray;
+}
+
+.message-text {
+  white-space: pre-line;
+  font-size: 16px;
+  line-height: 1.5;
 }
