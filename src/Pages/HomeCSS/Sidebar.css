@@ -1,22 +1,24 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  flex: 0.35;
-  border-right: 0.1px solid rgb(212, 212, 212);
-  width: 10vw;
+  border-right: 2px solid #EAEAEA;
+  width: 500px;
+}
+
+.sidebar-top-header {
+  border-bottom: 2px solid #EAEAEA;
 }
 
 .sidebar-header {
   display: flex;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 10px 15px;
   align-items: center;
   position: relative;
-  border-bottom: 0.1px solid rgb(212, 212, 212);
 }
 
 .sidebar-search {
-  background-color: #eae9ed;
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -42,7 +44,7 @@
   height: 30px;
   border-radius: 15px;
   padding: 5px 15px;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   width: 100%;
   margin-right: 25px;

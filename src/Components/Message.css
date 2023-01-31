@@ -41,35 +41,44 @@
 .message-box {
   display: flex;
   flex-direction: row;
-  padding: 20px 10px;
+  padding: 15px 20px;
+  background-color: #fff;
+  transition: background-color 200ms ease-in;
+}
+
+.message-box:hover {
+  background-color: #F8F8F8;
 }
 
 .message-image {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   margin-right: 10px;
 }
 
 .message-header {
   display: flex;
-  flex-direction: row;
-  align-items: end;
-  gap: 10px;
+  flex-direction: column;
+  margin-bottom: 5px;
+  gap: 4px;
 }
 
 .message-user {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
 }
 
 .message-time {
-  font-size: 15px;
-  color: gray;
+  font-size: 14px;
+  color: #74767E;
 }
 
 .message-text {
   white-space: pre-line;
   font-size: 16px;
+  font-weight: 400;
   line-height: 1.5;
+  color: #555;
 }

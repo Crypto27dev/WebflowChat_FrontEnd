@@ -16,7 +16,7 @@
   left: 0;
   right: 0;
   margin: auto;
-  background-color: #eae9ed;
+  background-color: #fff;
   border-radius: 10px;
   -webkit-box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
     0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12);
@@ -70,4 +70,29 @@
     top: 1%;
     left: 85%;
   }
+}
+
+.btn-send {
+  background: #12A4FF !important;
+  border-radius: 30px !important;
+  padding: 8px 20px !important;
+  color: white !important;
+  font-size: 16px;
+}
+
+.sidebar-members {
+  width: 100%;
+  height: 100%;
+}
+
+.ScrollbarsCustom-Wrapper {
+  inset: 0 !important;
+}
+
+.ScrollbarsCustom-Track {
+  width: 8px !important;
+}
+
+.ScrollbarsCustom-Thumb {
+  background: rgb(0 0 0 / 20%) !important;
 }

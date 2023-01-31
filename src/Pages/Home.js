@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { Scrollbar } from "react-scrollbars-custom";
 import "./HomeCSS/Home.css";
 import "./HomeCSS/Sidebar.css";
 import "./HomeCSS/ChatRoom.css";
@@ -15,11 +16,12 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
-import SendIcon from "@material-ui/icons/Send";
+import { IoSend } from "react-icons/io5";
+import { AiFillSafetyCertificate } from "react-icons/ai";
 import MenuIcon from "@material-ui/icons/Menu";
 import CloseIcon from "@material-ui/icons/Close";
 import SearchIcon from "@material-ui/icons/Search";
-import { IconButton } from "@material-ui/core";
+import { Button, IconButton } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
@@ -246,59 +248,60 @@ function Home() {
 
         {/* Sidebar */}
         <div className={open ? "sidebar active" : "sidebar"}>
-          <div className="sidebar-header">
-            <div className="menu-close" onClick={() => { setOpen(false); }} >
-              <IconButton sx={{ width: '50px', height: '50px' }}>
-                <CloseIcon style={{ fontSize: 35, color: "white" }} />
+          <div className="sidebar-top-header">
+            <div className="sidebar-header">
+              <div className="menu-close" onClick={() => { setOpen(false); }} >
+                <IconButton sx={{ width: '50px', height: '50px' }}>
+                  <CloseIcon style={{ fontSize: 35, color: "white" }} />
+                </IconButton>
+              </div>
+              <IconButton className="user-profile" onClick={() => { profiletoggler(); }} >
+                <img className="user-profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
               </IconButton>
+              <div className="logout-option">
+                <IconButton onClick={logout}>
+                  <ExitToAppIcon />
+                </IconButton>
+              </div>
             </div>
-            <IconButton className="user-profile" onClick={() => { profiletoggler(); }} >
-              <img className="user-profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
-            </IconButton>
-            <div className="logout-option">
-              <IconButton onClick={logout}>
-                <ExitToAppIcon />
-              </IconButton>
-            </div>
-          </div>
-          <div className="sidebar-search">
-            <div className="sidebar-search-container">
-              <SearchIcon className="sidebar-searchicon" />
-              <input type="text" name="chat-search" placeholder="Søk i en chat" onChange={(e) => setSearch(e.target.value)} />
+            <div className="sidebar-search">
+              <div className="sidebar-search-container">
+                <SearchIcon className="sidebar-searchicon" />
+                <input type="text" name="chat-search" placeholder="Søk etter brukernavnet..." onChange={(e) => setSearch(e.target.value)} />
+              </div>
             </div>
           </div>
 
           {/* Chatroom tiles */}
 
-          <div className="sidebar-chatoptions">
-            {chatroomtiles.filter(opt => {
-              if (search) {
-                for (let i = 0; i < opt.usernames.length; i ++) {
-                  const item = opt.usernames[i];
-                  const fullname = user.firstname + " " + user.lastname;
-                  if (item !== fullname && item.toLowerCase().includes(search.toLowerCase())) {
-                    return true;
+          <Scrollbar className="sidebar-members" noScrollX={true}>
+            <div className="sidebar-chatoptions">
+              {chatroomtiles.filter(opt => {
+                if (search) {
+                  for (let i = 0; i < opt.usernames.length; i++) {
+                    const item = opt.usernames[i];
+                    const fullname = user.firstname + " " + user.lastname;
+                    if (item !== fullname && item.toLowerCase().includes(search.toLowerCase())) {
+                      return true;
+                    }
                   }
+                  return false;
+                } else {
+                  return true;
                 }
-                return false;
-              } else {
-                return true;
-              }
-            }).map((chatroomtile, index) => (
-              <div
-                key={index}
-                onClick={(e) => {
-                  if (e.target.name === 'chat-info-name') {
-                    return;
-                  }
-                  setCurrentchat(chatroomtile);
-                  setOpen(false);
-                }}
-              >
-                <SidebarChat chatroomtile={chatroomtile} currentChat={currentchat} currentUser={user} />
-              </div>
-            ))}
-          </div>
+              }).map((chatroomtile, index) => (
+                <div
+                  key={index}
+                  onClick={(e) => {
+                    setCurrentchat(chatroomtile);
+                    setOpen(false);
+                  }}
+                >
+                  <SidebarChat chatroomtile={chatroomtile} currentChat={currentchat} currentUser={user} />
+                </div>
+              ))}
+            </div>
+          </Scrollbar>
         </div>
 
         {/* Chatroom */}
@@ -307,15 +310,42 @@ function Home() {
             <>
               <div className="chatroom-header">
                 <div className="chatroom-chatinfo">
-                  <img className='amigo-profilepic' src={amigo?.avatar ? amigo.avatar : API_URL + "api/images/noavatar.png"} alt='' />
+                  <img className='chatroom-profilepic' src={amigo?.avatar ? amigo.avatar : API_URL + "api/images/noavatar.png"} alt='' />
                   <div className="chatroom-chatinfo-right">
                     <div className="chatroom-chatinfo-name">
-                      <p>{amigo ? amigo.firstname + " " + amigo.lastname : ""}</p>
+                      <a href={'https://upit.no/profil/' + amigo?.mem_id} name="chat-info-name" className="chatroom-chatinfo-name">{amigo ? amigo?.firstname + " " + amigo?.lastname : ""}</a>
+                    </div>
+                    <span className='chatroom-plans'>
+                      {amigo?.plans.map((plan, index) => (
+                        <span className="chatroom-plan" key={index}>
+                          {plan.planName}{index < amigo?.plans.length - 1 ? ',' : ''}
+                        </span>
+                      ))}
+                    </span>
+                    <div className="chatroom-top-header">
+                      <span>Last seen: 2 hours ago</span>
+                      <span> | </span>
+                      <span>Local time: Jan 30, 2023, 5:10 AM</span>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="chatroom-messages-container" ref={roomRef} onClick={() => { setPick(false) }}>
+                <div className="chatroom-safety">
+                  <div className="flex flex-row w-100 align-center gap-10">
+                    <div className="safety-line"></div>
+                    <div className="chatroom-safety-header">
+                      <AiFillSafetyCertificate />
+                      <span>
+                        We have your back
+                      </span>
+                    </div>
+                    <div className="safety-line"></div>
+                  </div>
+                  <span className="chatroom-safety-text">
+                    For added safety and your protection, keep payments and communications within upit. Learn more
+                  </span>
+                </div>
                 {messages.map((message, index) => (
                   <div key={index}>
                     <Message message={message} amigo={amigo} own={message?.senderId === user._id} />
@@ -348,9 +378,10 @@ function Home() {
                   <button className="input-button" onClick={newMessage ? handleSubmit : null} > Send a Message </button>
                 </form>
                 <div className="chatroom-footer-righticon" onClick={newMessage ? handleSubmit : null} >
-                  <IconButton>
-                    <SendIcon className="send-icon" />
-                  </IconButton>
+                  <Button className="btn-send">
+                    SEND
+                    <IoSend className="ml-5" color="white" size={18} />
+                  </Button>
                 </div>
               </div>
             </>
@@ -359,7 +390,7 @@ function Home() {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

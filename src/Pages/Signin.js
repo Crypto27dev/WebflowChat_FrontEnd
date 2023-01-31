@@ -14,8 +14,8 @@ function Signin() {
     useEffect(() => {
         (() => {
             try {
-                // const token = window.location.pathname.replace('/', '');
-                const token = window.location.search.replace('?', '');
+                const token = window.location.pathname.replace('/', '');
+                // const token = window.location.search.replace('?', '');
                 const param = JSON.parse(atob(token));
                 loginCall(param, dispatch);
             } catch (err) {
@@ -42,7 +42,8 @@ function Signin() {
                 lastname: profile.customFields.etternavn,
                 email: profile.auth.email,
                 mem_id: profile.id,
-                avatar: profile.customFields.profilbilde
+                avatar: profile.customFields.profilbilde,
+                plans: profile.planConnections
             });
         }
         catch (err) {
@@ -64,7 +65,8 @@ function Signin() {
                 lastname: profile.customFields.etternavn,
                 email: profile.auth.email,
                 mem_id: profile.id,
-                avatar: profile.customFields.profilbilde
+                avatar: profile.customFields.profilbilde,
+                plans: profile.planConnections
             });
             
             if (param?.to) {
