@@ -44,17 +44,27 @@ function SidebarChat({ chatroomtile, currentChat, currentUser }) {
 
     return (
         <div className={isSelected ? 'sidebarchat sidebarchat-select' : 'sidebarchat'}>
-            <div className='flex align-center'>
+            <div className='flex align-items-center'>
                 <img className='amigo-profilepic' src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
                 <div className={online ? "online" : "offline"}></div>
-                <div className={user?.plans.length > 1 ? 'flex flex-col' : 'flex flex-col gap-10'}>
+                <div className='flex flex-col gap-10'>
                     <p className="sidebarchat-info-name">{user ? user?.firstname + " " + user?.lastname : ""}</p>
                     <span className='sidebarchat-plans'>
-                        {user?.plans.map((plan, index) => (
-                            <span className="sidebarchat-plan" key={index}>
-                                {plan.planName}
+                        {user?.plans.length === 1 && (
+                            <span className="sidebarchat-plan">
+                                {user.plans[0].planName}
                             </span>
-                        ))}
+                        )}
+                        {user?.plans.length > 1 && (
+                            <>
+                                <span className="sidebarchat-plan">
+                                    {user?.plans[0].planName}
+                                </span>
+                                <span className="sidebarchat-plan">
+                                    +{user?.plans.length - 1} more
+                                </span>
+                            </>
+                        )}
                     </span>
                 </div>
             </div>

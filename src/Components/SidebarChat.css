@@ -3,7 +3,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 75px;
+    height: 90px;
     padding: 10px 15px;
     padding-right: 20px;
     background-color: none;
@@ -24,22 +24,22 @@
 }
 
 .online{
-    height: 12px;
-    width: 12px;
+    height: 14px;
+    width: 14px;
     border-radius: 50%;
     position: absolute;
-    bottom: 10px;
-    left: 45px;
+    bottom: 14px;
+    left: 55px;
     background-color: #1DBF73;
     border: 3px solid white;
 }
 
 .offline{
-    height: 12px;
-    width: 12px;
+    height: 14px;
+    width: 14px;
     border-radius: 50%;
     position: absolute;
-    bottom: 10px;
+    bottom: 14px;
     left: 55px;
     background-color: #B5B6BA;
     border: 3px solid white;

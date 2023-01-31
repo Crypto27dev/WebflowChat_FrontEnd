@@ -14,8 +14,8 @@ function Signin() {
     useEffect(() => {
         (() => {
             try {
-                const token = window.location.pathname.replace('/', '');
-                // const token = window.location.search.replace('?', '');
+                // const token = window.location.pathname.replace('/', '');
+                const token = window.location.search.replace('?', '');
                 const param = JSON.parse(atob(token));
                 loginCall(param, dispatch);
             } catch (err) {

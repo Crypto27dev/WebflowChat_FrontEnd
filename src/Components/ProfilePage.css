@@ -29,7 +29,8 @@
 }
 
 .profile-card-open form label {
-  padding: 15px 0;
+  padding-top: 15px;
+  padding-bottom: 5px;
 }
 
 .username-input{
@@ -49,14 +50,12 @@
   color: white;
   font-size: 16px;
   font-weight: 900;
-  background-color: #316af3;
+  background-color: #12a4ff;
   cursor: pointer;
 }
 
 .profile-card-open button:hover {
-  background-color: white;
-  color: #316af3;
-  border: 1px solid #316af3;
+  background-color: #4cb5f7; 
   transition: all ease 0.5s;
 }
 

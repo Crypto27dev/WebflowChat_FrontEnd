@@ -332,7 +332,7 @@ function Home() {
               </div>
               <div className="chatroom-messages-container" ref={roomRef} onClick={() => { setPick(false) }}>
                 <div className="chatroom-safety">
-                  <div className="flex flex-row w-100 align-center gap-10">
+                  <div className="flex flex-row w-100 align-items-center gap-10">
                     <div className="safety-line"></div>
                     <div className="chatroom-safety-header">
                       <AiFillSafetyCertificate />
