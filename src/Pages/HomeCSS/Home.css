@@ -4,17 +4,13 @@
   height: 100vh;
   background-color: #0e1012;
   position: relative;
+  padding: 0 50px;
 }
 
 .home-components {
   display: flex;
   height: 95vh;
-  width: 80vw;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   margin: auto;
   background-color: #fff;
   border-radius: 10px;
@@ -27,15 +23,12 @@
 .menu-open{
   position: absolute;
   z-index: 1000;
-  top: 0.5%;
-  left: 0%;
+  top: 26px;
+  left: -1px;
   border-radius: 50%;
-  margin: 0 5px;
 }
 
 .menu-close{
-  position: absolute;
-  left: 75%;
   z-index: 1000;
   border-radius: 50%;
 }
@@ -59,6 +52,7 @@
 @media screen and (max-width: 768px) {
   .home {
     overflow: hidden;
+    padding: 0;
   }
   .home-components {
     height: 100vh;
@@ -75,7 +69,7 @@
 .btn-send {
   background: #12A4FF !important;
   border-radius: 30px !important;
-  padding: 8px 20px !important;
+  padding: 12px 20px !important;
   color: white !important;
   font-size: 16px;
 }

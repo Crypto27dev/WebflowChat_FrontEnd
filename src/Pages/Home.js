@@ -15,6 +15,7 @@ import { io } from "socket.io-client";
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
+import moment from "moment";
 
 import { IoSend } from "react-icons/io5";
 import { AiFillSafetyCertificate } from "react-icons/ai";
@@ -35,10 +36,13 @@ function Home() {
   const [search, setSearch] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [amigo, setAmigo] = useState();
+  const [amigoDetail, setAmigoDetail] = useState();
   const [open, setOpen] = useState(false);
   const { user, currentMem } = useContext(AuthContext);
+  const API_KEY = process.env.REACT_APP_MEMBERSTACK_KEY;
+  const BASE_URL = 'https://admin.memberstack.com/members';
+  const headers = { "X-API-KEY": API_KEY };
   const roomRef = useRef();
-  const formRef = useRef();
   const socket = useRef();
 
   const API_URL = process.env.REACT_APP_API_URL
@@ -103,10 +107,22 @@ function Home() {
 
   useEffect(() => {
     const amigoId = currentchat?.members.find((m) => m !== user._id);
+    const getUserInfo = async (mem_id) => {
+      try {
+        const resp = await axios.get(`${BASE_URL}/${mem_id}`, { headers });
+        return resp.data.data;
+      } catch (err) {
+        console.log(err);
+      }
+      return null;
+    }
     const getAmigodetails = async () => {
       try {
         const response = await axios.get(API_URL + "api/users/" + amigoId);
-        setAmigo(response.data);
+        const amigoData = response.data;
+        setAmigo(amigoData);
+        const response2 = await getUserInfo(amigoData.mem_id);
+        setAmigoDetail(response2);
       } catch (err) { }
     };
     if (currentchat) {
@@ -144,7 +160,6 @@ function Home() {
   }
 
   /* Emoji Picker */
-
   const addEmoji = (e) => {
     let emoji = e.native;
     setNewMessage(newMessage + emoji);
@@ -170,6 +185,7 @@ function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!newMessage) return;
     const sendingMessage = {
       chatroomId: currentchat._id,
       senderId: user._id,
@@ -217,7 +233,6 @@ function Home() {
   const profiletoggler = () => {
     profiletoggle === false ? setProfiletoggle(true) : setProfiletoggle(false);
   };
-
   return (
     <div className="home">
       {/* Chat Adding Card */}
@@ -231,7 +246,7 @@ function Home() {
         ? ""
         : <div className="menu-open" onClick={() => { setOpen(true); }} >
           <IconButton>
-            <MenuIcon style={{ fontSize: 35, color: "#0e1012" }} />
+            <MenuIcon style={{ fontSize: 30, color: "#333" }} />
           </IconButton>
         </div>
       }
@@ -249,15 +264,19 @@ function Home() {
         {/* Sidebar */}
         <div className={open ? "sidebar active" : "sidebar"}>
           <div className="sidebar-top-header">
-            <div className="sidebar-header">
+            <div className="sidebar-mobile-header">
+              <div></div>
               <div className="menu-close" onClick={() => { setOpen(false); }} >
                 <IconButton sx={{ width: '50px', height: '50px' }}>
-                  <CloseIcon style={{ fontSize: 35, color: "white" }} />
+                  <CloseIcon style={{ fontSize: 30, color: "#333" }} />
                 </IconButton>
               </div>
+            </div>
+            <div className="sidebar-header">
               <IconButton className="user-profile" onClick={() => { profiletoggler(); }} >
                 <img className="user-profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt='' />
               </IconButton>
+              <span className="sidebar-mobile-profile-name">{user?.firstname + " " + user?.lastname}</span>
               <div className="logout-option">
                 <IconButton onClick={logout}>
                   <ExitToAppIcon />
@@ -268,6 +287,11 @@ function Home() {
               <div className="sidebar-search-container">
                 <SearchIcon className="sidebar-searchicon" />
                 <input type="text" name="chat-search" placeholder="Søk etter brukernavnet..." onChange={(e) => setSearch(e.target.value)} />
+              </div>
+              <div className="logout-mobile-option">
+                <IconButton onClick={logout}>
+                  <ExitToAppIcon />
+                </IconButton>
               </div>
             </div>
           </div>
@@ -329,60 +353,97 @@ function Home() {
                     </div>
                   </div>
                 </div>
+                <div className="chatroom-search">
+                  <div className="chatroom-search-container">
+                    <SearchIcon className="chatroom-searchicon" />
+                    <input type="text" name="chat-search" placeholder="søk melding..." />
+                  </div>
+                </div>
               </div>
-              <div className="chatroom-messages-container" ref={roomRef} onClick={() => { setPick(false) }}>
-                <div className="chatroom-safety">
-                  <div className="flex flex-row w-100 align-items-center gap-10">
-                    <div className="safety-line"></div>
-                    <div className="chatroom-safety-header">
-                      <AiFillSafetyCertificate />
-                      <span>
-                        We have your back
+              <div className="chatroom-container">
+                <div className="flex flex-col w-100 h-100">
+                  <div className="chatroom-messages-container" ref={roomRef} onClick={() => { setPick(false) }}>
+                    <div className="chatroom-safety">
+                      <div className="flex flex-row w-100 align-items-center gap-10">
+                        <div className="safety-line"></div>
+                        <div className="chatroom-safety-header">
+                          <AiFillSafetyCertificate />
+                          <span>
+                            We have your back
+                          </span>
+                        </div>
+                        <div className="safety-line"></div>
+                      </div>
+                      <span className="chatroom-safety-text">
+                        For added safety and your protection, keep payments and communications within upit. Learn more
                       </span>
                     </div>
-                    <div className="safety-line"></div>
+                    {messages.map((message, index) => (
+                      <div key={index}>
+                        <Message message={message} amigo={amigo} own={message?.senderId === user._id} />
+                      </div>
+                    ))}
                   </div>
-                  <span className="chatroom-safety-text">
-                    For added safety and your protection, keep payments and communications within upit. Learn more
-                  </span>
+                  <div className="chatroom-footer">
+                    <div className="chatroom-footer-lefticons">
+                      <IconButton onClick={openPicker}>
+                        <InsertEmoticonIcon />
+                      </IconButton>
+                      <IconButton>
+                        <AttachFileIcon />
+                      </IconButton>
+                    </div>
+                    <form>
+                      <TextareaAutosize
+                        className="message-input"
+                        name="message-input"
+                        placeholder="Type a message"
+                        maxRows={5}
+                        onKeyDown={handleMessageKey}
+                        onChange={handleMessage}
+                        value={newMessage}
+                        required
+                      />
+                      <button className="input-button" onClick={newMessage ? handleSubmit : null} > Send a Message </button>
+                    </form>
+                    <div className="chatroom-footer-righticon" onClick={newMessage ? handleSubmit : null} >
+                      <Button className="btn-send">
+                        <span className="send-text">SEND</span>
+                        <IoSend className="ml-5" color="white" size={18} />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-                {messages.map((message, index) => (
-                  <div key={index}>
-                    <Message message={message} amigo={amigo} own={message?.senderId === user._id} />
+                <div className="chatroom-profile">
+                  <div className="flex flex-col gap-5">
+                    <img className="profile-photo" src={amigo?.avatar ? amigo.avatar : API_URL + "api/images/noavatar.png"} alt='' />
+                    <div className="profile-online"><span /> <p className="m-0">Active</p></div>
                   </div>
-                ))}
+                  <span className="desc-title">About &nbsp;
+                    <a href={'https://upit.no/profil/' + amigo?.mem_id} className="desc-profile-name text-underline">{amigo ? amigo?.firstname + " " + amigo?.lastname : ""}</a>
+                  </span>
+                  <div className="profile-description">
+                    <div className="desc-text flex-row-between gap-10">
+                      <span className="gray-primary">Location</span>
+                      <span className="desc-text-value">{amigoDetail?.customFields?.lokasjon}</span>
+                    </div>
+                    <div className="desc-text flex-row-between">
+                      <span className="gray-primary">Specialist</span>
+                      <span className="desc-text-value">{amigoDetail?.customFields?.jobbkategori}</span>
+                    </div>
+                    <div className="desc-text flex-row-between">
+                      <span className="gray-primary">Phone</span>
+                      <span className="desc-text-value">{amigoDetail?.customFields?.telefonnummer}</span>
+                    </div>
+                    <div className="desc-text flex-row-between">
+                      <span className="gray-primary">On Upit Since</span>
+                      <span className="desc-text-value">{moment(amigoDetail?.createdAt).format("MMM YYYY")}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className={pick ? "emoji-picker-open" : "emoji-picker-close"} >
                 <Picker onSelect={addEmoji} emojiSize={25} />
-              </div>
-              <div className="chatroom-footer">
-                <div className="chatroom-footer-lefticons">
-                  <IconButton onClick={openPicker}>
-                    <InsertEmoticonIcon />
-                  </IconButton>
-                  <IconButton>
-                    <AttachFileIcon />
-                  </IconButton>
-                </div>
-                <form>
-                  <TextareaAutosize
-                    className="message-input"
-                    name="message-input"
-                    placeholder="Type a message"
-                    maxRows={5}
-                    onKeyDown={handleMessageKey}
-                    onChange={handleMessage}
-                    value={newMessage}
-                    required
-                  />
-                  <button className="input-button" onClick={newMessage ? handleSubmit : null} > Send a Message </button>
-                </form>
-                <div className="chatroom-footer-righticon" onClick={newMessage ? handleSubmit : null} >
-                  <Button className="btn-send">
-                    SEND
-                    <IoSend className="ml-5" color="white" size={18} />
-                  </Button>
-                </div>
               </div>
             </>
           ) : (

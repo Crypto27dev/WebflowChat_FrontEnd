@@ -96,9 +96,6 @@ function Signin() {
                     backgroundColor="#fff"
                 />
             </div>
-            <footer>
-                <span>@Copyright2023</span>
-            </footer>
         </div>
     )
 }

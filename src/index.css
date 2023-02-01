@@ -1,20 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap");
 
-*{
+* {
   margin: 0;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
@@ -46,6 +45,11 @@ code {
   align-items: center;
 }
 
+.flex-row-between {
+  display: flex;
+  justify-content: space-between;
+}
+
 .gap-5 {
   gap: 5px;
 }
@@ -62,8 +66,24 @@ code {
   gap: 20px;
 }
 
+.fw-400 {
+  font-weight: 400;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
 .gray-primary {
-  color: #74767E;
+  color: #74767e;
+}
+
+.black-primary {
+  color: #333;
 }
 
 .fs-14 {
@@ -83,7 +103,7 @@ code {
 }
 
 .ml-5 {
-  margin-left: 5px; 
+  margin-left: 5px;
 }
 
 .MuiIconButton-root {
@@ -94,8 +114,27 @@ code {
   width: 100%;
 }
 
+.h-100 {
+  height: 100%;
+}
+
 .safety-line {
   flex: 1;
   height: 1px;
-  background: #EAEAEA;
+  background: #eaeaea;
+}
+
+.MuiButton-label {
+  font-size: 15px;
+  font-family: "Inter";
+  font-weight: 700;
+  line-height: 1;
+}
+
+.text-underline {
+  text-decoration-line: underline;
+}
+
+.m-0 {
+  margin: 0 !important;
 }

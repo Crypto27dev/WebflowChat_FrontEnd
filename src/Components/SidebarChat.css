@@ -34,6 +34,20 @@
     border: 3px solid white;
 }
 
+.profile-online {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #1DBF73;
+}
+
+.profile-online span {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background-color: #1DBF73;
+}
+
 .offline{
     height: 14px;
     width: 14px;
@@ -43,6 +57,20 @@
     left: 55px;
     background-color: #B5B6BA;
     border: 3px solid white;
+}
+
+.profile-offline {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #B5B6BA;
+}
+
+.profile-offline span {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background-color: #B5B6BA;
 }
 
 .sidebarchat-info-name{
@@ -99,4 +127,19 @@
     width: 140px;
     display: flex;
     flex-direction: column;
+}
+
+.btn-favorite {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.latest_time {
+    color: #74767E;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1.5;
 }
