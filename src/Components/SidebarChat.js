@@ -5,28 +5,27 @@ import { io } from "socket.io-client"
 import { FaStar } from "react-icons/fa"
 import { FiStar } from "react-icons/fi"
 import { RiMailOpenLine } from "react-icons/ri"
-import { format, register } from "timeago.js"
+import { format } from "timeago.js"
 
-const localeFunc = (number, index, totalSec) => {
-    // number: the timeago / timein number;
-    // index: the index of array below;
-    // totalSec: total seconds between date to be formatted and today's date;
-    return [
-        ['just now', 'Just now'],
-        ['%s seconds ago', '%s secs'],
-        ['1 minute ago', '1 min'],
-        ['%s minutes ago', '%s mins'],
-        ['1 hour ago', '1 hour'],
-        ['%s hours ago', '%s hours'],
-        ['1 day ago', '1 day'],
-        ['%s days ago', '%s days'],
-        ['1 week ago', '1 week'],
-        ['%s weeks ago', '%s weeks'],
-        ['1 month ago', '1 month'],
-        ['%s months ago', '%s months'],
-        ['1 year ago', '1 year'],
-        ['%s years ago', '%s years']
-    ][index];
+const localeFunc = (date_str) => {
+    return date_str
+        .replace('right now', 'Akkurat nå')
+        .replace('just now', 'Akkurat nå')
+        .replace('seconds', 'sekunder')
+        .replace('minutes', 'minutter')
+        .replace('years', 'år')
+        .replace('hours', 'timer')
+        .replace('days', 'dager')
+        .replace('weeks', 'uker')
+        .replace('months', 'måneder')
+        .replace('minute', 'minutt')
+        .replace('hour', 'time')
+        .replace('day', 'dag')
+        .replace('week', 'uke')
+        .replace('month', 'måned')
+        .replace('year', 'år')
+        .replace('in ', '')
+        .replace(' ago', '');
 };
 
 function SidebarChat({ chatroomtile, currentChat, currentUser }) {
@@ -38,10 +37,6 @@ function SidebarChat({ chatroomtile, currentChat, currentUser }) {
     const socket = useRef()
 
     const API_URL = process.env.REACT_APP_API_URL
-
-    useEffect(() => {
-        register('my-locale', localeFunc);
-    }, []);
 
     useEffect(() => {
         socket.current = io(API_URL);
@@ -72,7 +67,7 @@ function SidebarChat({ chatroomtile, currentChat, currentUser }) {
                 const response = await axios.get(API_URL + 'api/messages/latest/' + chatroomtile?._id)
                 const data = response.data;
                 if (data.length > 0) {
-                    setLatestAt(format(data[0].createdAt, 'my-locale'));
+                    setLatestAt(localeFunc(format(data[0].createdAt)));
                 }
             } catch (err) {
                 console.log(err);
@@ -110,7 +105,7 @@ function SidebarChat({ chatroomtile, currentChat, currentUser }) {
             </div>
             <div className='flex flex-col gap-10'>
                 <div className='flex gap-10 justify-end'>
-                    <span className='latest_time'>{latestAt ? latestAt.replace('minute', 'min').replace('second', 'sec').replace(' ago', '') : 'Just now'}</span>
+                    <span className='latest_time'>{latestAt ? latestAt.replace(' ago', '') : 'Akkurat nå'}</span>
                     <button name="favorite" className='btn-favorite' onClick={() => setFavorite(prev => !prev)}>
                         {favorite ? <FaStar size={20} color='#12A4FF'></FaStar> : <FiStar size={20} color='#8f9199'></FiStar>}
                     </button>

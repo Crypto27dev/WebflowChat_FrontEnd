@@ -34,6 +34,7 @@ function Home() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [search, setSearch] = useState("");
+  const [online, setOnline] = useState(false);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [amigo, setAmigo] = useState();
   const [amigoDetail, setAmigoDetail] = useState();
@@ -107,6 +108,9 @@ function Home() {
 
   useEffect(() => {
     const amigoId = currentchat?.members.find((m) => m !== user._id);
+    socket.current.on("getUsers", (users) => {
+      setOnline(users.find((user) => user.userId === amigoId));
+    })
     const getUserInfo = async (mem_id) => {
       try {
         const resp = await axios.get(`${BASE_URL}/${mem_id}`, { headers });
@@ -347,9 +351,9 @@ function Home() {
                       ))}
                     </span>
                     <div className="chatroom-top-header">
-                      <span>Last seen: 2 hours ago</span>
+                      <span>Sist sett: 2 timer siden</span>
                       <span> | </span>
-                      <span>Local time: Jan 30, 2023, 5:10 AM</span>
+                      <span>Lokal tid: Jan 30, 2023, 05:10</span>
                     </div>
                   </div>
                 </div>
@@ -369,13 +373,13 @@ function Home() {
                         <div className="chatroom-safety-header">
                           <AiFillSafetyCertificate />
                           <span>
-                            We have your back
+                            Du er i trygge hender
                           </span>
                         </div>
                         <div className="safety-line"></div>
                       </div>
                       <span className="chatroom-safety-text">
-                        For added safety and your protection, keep payments and communications within upit. Learn more
+                        For økt sikkerhet, hold betalinger og kommunikasjon innenfor Upit. Lær mer
                       </span>
                     </div>
                     {messages.map((message, index) => (
@@ -397,7 +401,7 @@ function Home() {
                       <TextareaAutosize
                         className="message-input"
                         name="message-input"
-                        placeholder="Type a message"
+                        placeholder="Skriv melding"
                         maxRows={5}
                         onKeyDown={handleMessageKey}
                         onChange={handleMessage}
@@ -417,26 +421,26 @@ function Home() {
                 <div className="chatroom-profile">
                   <div className="flex flex-col gap-5">
                     <img className="profile-photo" src={amigo?.avatar ? amigo.avatar : API_URL + "api/images/noavatar.png"} alt='' />
-                    <div className="profile-online"><span /> <p className="m-0">Active</p></div>
+                    <div className={online ? "profile-online" : "profile-offline"}><span /> <p className="m-0">{online ? "Aktiv" : "Inaktiv"}</p></div>
                   </div>
-                  <span className="desc-title">About &nbsp;
+                  <span className="desc-title">Om &nbsp;
                     <a href={'https://upit.no/profil/' + amigo?.mem_id} className="desc-profile-name text-underline">{amigo ? amigo?.firstname + " " + amigo?.lastname : ""}</a>
                   </span>
                   <div className="profile-description">
                     <div className="desc-text flex-row-between gap-10">
-                      <span className="gray-primary">Location</span>
+                      <span className="gray-primary">Lokasjon</span>
                       <span className="desc-text-value">{amigoDetail?.customFields?.lokasjon}</span>
                     </div>
                     <div className="desc-text flex-row-between">
-                      <span className="gray-primary">Specialist</span>
+                      <span className="gray-primary">Spesialist</span>
                       <span className="desc-text-value">{amigoDetail?.customFields?.jobbkategori}</span>
                     </div>
                     <div className="desc-text flex-row-between">
-                      <span className="gray-primary">Phone</span>
+                      <span className="gray-primary">Telefon</span>
                       <span className="desc-text-value">{amigoDetail?.customFields?.telefonnummer}</span>
                     </div>
                     <div className="desc-text flex-row-between">
-                      <span className="gray-primary">On Upit Since</span>
+                      <span className="gray-primary">Medlem siden</span>
                       <span className="desc-text-value">{moment(amigoDetail?.createdAt).format("MMM YYYY")}</span>
                     </div>
                   </div>

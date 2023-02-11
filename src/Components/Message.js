@@ -16,8 +16,8 @@ function Message({ message, amigo, own }) {
             </img>
             <div>
                 <div className="message-header">
-                    <span className='message-user'>{own ? "Me" : amigo?.firstname + " " + amigo?.lastname}</span>
-                    <span className='message-time'>{moment(message.createdAt).format("MMM DD YYYY, h:mm A")}</span>
+                    <span className='message-user'>{own ? "Meg" : amigo?.firstname + " " + amigo?.lastname}</span>
+                    <span className='message-time'>{moment(message.createdAt).format("MMM DD YYYY, HH:mm")}</span>
                 </div>
                 <p className="message-text">{message.text}</p>
             </div>
