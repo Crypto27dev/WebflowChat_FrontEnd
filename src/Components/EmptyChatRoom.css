@@ -1,27 +1,22 @@
-.EmptyChatroom img {
+.EmptyChatroom {
   width: 100%;
-  max-width: 500px;
-  border-top-right-radius: 15px;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px;
+}
+.EmptyChatroom img {
+  width: 250px;
+  height: auto;
+  max-width: 500px;
 }
 
 .empty-chatroom-mainhead {
-  font-size: 35px;
+  font-size: 20px;
   font-weight: 500;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  line-height: 45px;
-  letter-spacing: 0.8px;
+  color: black;
+  letter-spacing: 0;
 }
 
 .empty-chatroom-subhead {

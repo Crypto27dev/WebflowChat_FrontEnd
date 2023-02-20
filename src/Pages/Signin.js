@@ -22,6 +22,7 @@ function Signin() {
                 console.log(err);
             }
         })()
+        document.title = "Upit Chat";
     }, []);
 
     const getUserInfo = async (mem_id) => {
@@ -72,6 +73,8 @@ function Signin() {
             if (param?.to) {
                 await registerCall(param.to);
             }
+            await login(res.data._id);
+
             dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
             setLoading(false);
             setCurrentMem(param.to);
@@ -79,6 +82,15 @@ function Signin() {
         catch (err) {
             console.log("Login Err:", err)
             dispatch({ type: "LOGIN_FAILURE", payload: err })
+        }
+    }
+
+    const login = async (id) => {
+        try {
+            await axios.put(API_URL + "api/auth/" + id);
+        }
+        catch (err) {
+            console.log(err)
         }
     }
 

@@ -74,6 +74,15 @@
   font-size: 16px;
 }
 
+.btn-send-file {
+  background: #fff !important;
+  border-radius: 30px !important;
+  padding: 12px 20px !important;
+  color: white !important;
+  font-size: 16px;
+  color: #000 !important;
+}
+
 .sidebar-members {
   width: 100%;
   height: 100%;
@@ -89,4 +98,73 @@
 
 .ScrollbarsCustom-Thumb {
   background: rgb(0 0 0 / 20%) !important;
+}
+
+.file-upload {
+  display: none;
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transform: translateY(-100px);
+  transition: all 100ms ease-in-out;
+  background-color: rgb(255 255 255 / 0%) !important;
+  z-index: 99;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+  transform: translateY(-100px);
+}
+
+.ReactModal__Content {
+  background: #12a4ff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  max-width: 400px;
+  width: 100%;
+  height: fit-content;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-title {
+  color: white;
+}
+
+.modal-file-img {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.modal-file-name {
+  font-size: 20px;
+  color: white;
+  width: 300px;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+}
+
+.modal-file-size {
+  font-size: 16px;
+  color: white;
+}
+
+.modal-max-file {
+  color: white;
 }

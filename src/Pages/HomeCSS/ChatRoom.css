@@ -100,6 +100,7 @@
 .chatroom-footer {
   display: flex;
   align-items: center;
+  gap: 10px;
   border-top: 0.1px solid rgb(212, 212, 212);
   padding: 10px 15px;
   height: fit-content;
@@ -128,13 +129,12 @@
 }
 
 .chatroom-footer form {
-  flex: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   height: fit-content;
-  margin-left: 10px;
+  width: 100%;
 }
 
 .chatroom-footer form button {
@@ -165,7 +165,6 @@
 }
 
 .message-input {
-  flex: 1;
   font-family: "Inter", sans-serif;
   padding: 12px 20px;
   height: 15px;
@@ -176,6 +175,9 @@
   background-color: rgb(0 0 0 / 4%);
   resize: none;
   color: #333;
+  word-wrap: break-word;
+  word-break: break-all;
+  width: 100%;
 }
 
 .message-input::-webkit-scrollbar-track {
@@ -257,13 +259,12 @@
   background-color: transparent;
 }
 
-.chatroom-footer-righticon {
-  margin-left: 10px;
-}
-
 .chatroom-footer-lefticons {
   display: flex;
   gap: 10px;
+}
+.icon-picker {
+  display: block;
 }
 
 .send-icon {
@@ -280,23 +281,23 @@
 }
 
 @media screen and (max-width: 768px) {
+  .chatroom-footer {
+    padding: 10px 5px;
+  }
   .chatroom-search {
     display: block;
   }
   .chatroom-footer-lefticons {
     display: flex;
   }
+  .icon-picker {
+    display: none !important;
+  }
   .chatroom {
     flex: 1;
   }
-  .message-input {
-    margin-left: -45px;
-  }
   .chatroom-top-header span:nth-child(2), .chatroom-top-header span:nth-child(3) {
     display: none;
-  }
-  .chatroom-footer-righticon {
-    margin-left: -40px !important;
   }
   .chatroom-footer-righticon button{
     width: 48px;

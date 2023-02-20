@@ -26,10 +26,22 @@ function ProfilePage({ toggler, togglestate }) {
     }
 
     try {
-      await axios.put(API_URL + 'api/users/' + user?._id, updated_data, config)
-      const result = await axios.get(API_URL+"api/users/"+user?._id)
-      const data = JSON.stringify(result.data)
-      localStorage.setItem("user",data)
+      await axios.put(API_URL + 'api/users/', {
+        params: {
+          id: user?._id
+        }
+      }, updated_data, config)
+      if (user?._id) {
+        const result = await axios.get(API_URL + "api/users/",
+          {
+            params: {
+              id: user?._id
+            }
+          }
+        )
+        const data = JSON.stringify(result.data)
+        localStorage.setItem("user", data)
+      }
     }
     catch (err) {
       console.log(err)
@@ -42,7 +54,7 @@ function ProfilePage({ toggler, togglestate }) {
       <div className={togglestate ? "profile-card-open" : "profile-card-close"}>
         <div className="close-div">
           <span onClick={toggler}>
-            <CloseIcon fontSize="large"/>
+            <CloseIcon fontSize="large" />
           </span>
         </div>
         <img className="profile-image" src={user?.avatar ? user.avatar : API_URL + "api/images/noavatar.png"} alt=""></img>
